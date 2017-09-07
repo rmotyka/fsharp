@@ -25,10 +25,10 @@ let list2 = List.concat [ [5; 6 ]; [7; 8] ]
 let list3 = list1 @ list2
 
 // average
-
 List.map (float) [0; 1; 1; 2] |> List.average 
 
-
 // choose
-
 List.choose (fun x -> x) [ Some(2); None;  Some(3);  None; Some(4)]
+
+// chunkBySize
+List.chunkBySize 5 [1..10]
