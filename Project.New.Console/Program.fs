@@ -1,10 +1,11 @@
 ﻿// Learn more about F# at http://fsharp.org
 open System
-open Project.New.Library
+open Project.New.Library.Say
+open Project.New.Library.Drzewko
 
-let rec allParents (lista : Drzewko.Item list) (id : int) =
+let rec allParents (lista : Item list) (id : int) =
     [
-        let currentRecord = List.tryFind (fun (x : Drzewko.Item) -> x.Id = id) lista
+        let currentRecord = List.tryFind (fun (x : Item) -> x.Id = id) lista
         match currentRecord with
         | Some x -> 
             yield! allParents lista x.Parent
@@ -33,18 +34,16 @@ let combine f g x =
     let w1 = g x
     f w1
 
-let combineBezArg = 
-
 
 [<EntryPoint>]
 let main argv =
-    let items = Drzewko.ListOfItems
+    let items = ListOfItems
     // pokazListe items
 
     let parents = allParents items 4
     pokazListe parents
     
-    let t = Say.hello "Roman"
+    let t = hello "Roman"
     printfn "Hello World from F#! %A" t
     0 // return an integer exit code
 
