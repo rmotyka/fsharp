@@ -10,4 +10,5 @@ let droopQuota seats totalValidPoll =
 // Only valid votes
 let mainCaluclation (poll: Poll) (voteList: VoteList) : PollResult =
 
-
+    let pollResult = {items = [{candidateId = 1; numberOfVotes = 100; elected = true}]}
+    pollResult
