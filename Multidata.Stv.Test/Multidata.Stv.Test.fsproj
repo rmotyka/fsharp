@@ -12,17 +12,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170628-02" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Project.New.Library\Project.New.Library.fsproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Update="FSharp.Core" Version="4.2.3" />
+    <ProjectReference Include="..\Multidata.Stv\Multidata.Stv.fsproj" />
   </ItemGroup>
 
 </Project>
