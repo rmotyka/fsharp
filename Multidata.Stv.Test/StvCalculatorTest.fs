@@ -12,7 +12,7 @@ let ``My test`` () =
 [<Fact>]
 let ``droop quota`` () =
     let res = calculateDroopQuota 2 100
-    Assert.Equal(33, res)
+    Assert.Equal(34, res)
 
 [<Fact>]
 let ``sumVotes`` () =
@@ -29,15 +29,20 @@ let ``sumVotes`` () =
         ]; numberOfVotes = 2
         };
         {ballot = [
-            {VoteItem.candidateId = 1; preference = 1};
-            {VoteItem.candidateId = 2; preference = 2}
+            {VoteItem.candidateId = 3; preference = 1};
+            {VoteItem.candidateId = 4; preference = 2}
         ]; numberOfVotes = 3
         }              
     ]
 
     let res = Multidata.Stv.StvCalculator.sumVotes 1 aggregatedVoteList
-    Assert.True(true)
-
+    let (c1, v1) = res.[0]
+    Assert.Equal(1, c1)
+    Assert.Equal(3, v1)
+    let (c3, v3) = res.[1]
+    Assert.Equal(3, c3)
+    Assert.Equal(3, v3)    
+(*
 [<Fact>]
 let ``aggregate votes`` () =
     let ballotList = [
@@ -74,3 +79,5 @@ let ``mainCaluclation`` () =
     let items = res.items
 
     Assert.Equal(1, items.Item(0).candidateId)
+
+    *)
