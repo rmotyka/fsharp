@@ -15,17 +15,19 @@ let aggregateVotes (voteList: Ballot list) =
          {ballot = b; numberOfVotes = c})
 
 
-//let iterationLoop droopQuota aggregatedVoteList =
-    // result
+let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult : PollResult =
 
-// Only valid votesBallot
+
+
+    if List.length pollResult.items = numberOfSeats then
+        pollResult
+    else
+        iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult 
+
+// Only valid and sorted ballots
 let mainCaluclation (poll: Poll) (voteList: Ballot list) : PollResult =
     let totalValidPoll = List.length voteList
     let droopQuota = calculateDroopQuota poll.numberOfSeats totalValidPoll
-
-
-
-
-    // temporary result
-    let pollResult = {items = [{candidateId = 1; numberOfVotes = 100; elected = true}]}
-    pollResult
+    let aggregatedVotes = aggregateVotes voteList
+    let pollResult = {items = []}
+    iterationLoop poll.numberOfSeats droopQuota aggregatedVotes pollResult
