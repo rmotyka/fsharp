@@ -15,7 +15,8 @@ let aggregateVotes (voteList: Ballot list) =
          {ballot = b; numberOfVotes = c})
 
 
-// let iterationLoop droopQuota 
+//let iterationLoop droopQuota aggregatedVoteList =
+    // result
 
 // Only valid votesBallot
 let mainCaluclation (poll: Poll) (voteList: Ballot list) : PollResult =

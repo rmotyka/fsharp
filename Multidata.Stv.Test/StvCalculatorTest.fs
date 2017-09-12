@@ -24,11 +24,19 @@ let ``aggregate votes`` () =
         [
             {VoteItem.candidateId = 1; preference = 1};
             {VoteItem.candidateId = 2; preference = 2};
-        ]
+        ];
+        [
+            {VoteItem.candidateId = 1; preference = 1};
+            {VoteItem.candidateId = 3; preference = 2};
+        ]    
     ]
+
     let res = aggregateVotes ballotList
-    printfn "Aggregate: %A" res
-    Assert.True(true)
+
+    let numberOfAggregates = List.length res
+    Assert.Equal(2, numberOfAggregates)
+    Assert.Equal(2, res.[0].numberOfVotes)
+    Assert.Equal(1, res.[1].numberOfVotes)
 
 [<Fact>]
 let ``mainCaluclation`` () =
