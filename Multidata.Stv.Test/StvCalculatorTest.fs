@@ -11,8 +11,24 @@ let ``My test`` () =
 
 [<Fact>]
 let ``droop quota`` () =
-    let res = droopQuota 2 100
+    let res = calculateDroopQuota 2 100
     Assert.Equal(33, res)
+
+[<Fact>]
+let ``aggregate votes`` () =
+    let ballotList = [
+        [
+            {VoteItem.candidateId = 1; preference = 1};
+            {VoteItem.candidateId = 2; preference = 2};
+        ];
+        [
+            {VoteItem.candidateId = 1; preference = 1};
+            {VoteItem.candidateId = 2; preference = 2};
+        ]
+    ]
+    let res = aggregateVotes ballotList
+    printfn "Aggregate: %A" res
+    Assert.True(true)
 
 [<Fact>]
 let ``mainCaluclation`` () =

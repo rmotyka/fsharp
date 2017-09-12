@@ -10,9 +10,7 @@ type VoteItem = {
     preference: int
 }
 
-type Vote = VoteItem list
-
-type VoteList = Vote list
+type Ballot = VoteItem list
 
 type Poll = { 
     numberOfSeats: int;
@@ -28,3 +26,7 @@ type PollResultItem = {
 type PollResult = {
     items: PollResultItem list
 }
+
+// --- temporary types
+
+type AggregatedVote = {ballot: Ballot; numberOfVotes: int}
