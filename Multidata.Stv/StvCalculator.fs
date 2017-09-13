@@ -23,16 +23,29 @@ let sumVotes (preference: int) (aggregatedVoteList: AggregatedVote list) =
     |> List.map (fun (key , values) -> (key, List.sumBy snd values)) // sum votes for candidate - I don't like: List.sumBy snd values
 
 let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult : PollResult =
+    
+    
     let numberResults = List.length pollResult.items
     match numberResults with
     //| 0 -> calculateFirstPoll 
     | numberOfSeats -> pollResult
     | _ -> iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult
 
+let voteSumToPollResult droopQuota votesSum : PollResult = 
+    let filteredItems = List.filter (fun (c, v) -> v >= droopQuota) votesSum
+    let pollResultList = List.map (fun (c, v) -> {candidateId = c; numberOfVotes = v; elected = true}) filteredItems
+
+    let pollResult = {items = pollResultList}
+    pollResult
+
 // Only valid and sorted ballots
 let mainCaluclation (poll: Poll) (voteList: Ballot list) : PollResult =
     let totalValidPoll = List.length voteList
     let droopQuota = calculateDroopQuota poll.numberOfSeats totalValidPoll
     let aggregatedVotes = aggregateVotes voteList
-    let pollResult = {items = []}
+    // first round
+    let votesSum = sumVotes 1 aggregatedVotes
+    let pollResult = voteSumToPollResult droopQuota votesSum
+
+
     iterationLoop poll.numberOfSeats droopQuota aggregatedVotes pollResult
