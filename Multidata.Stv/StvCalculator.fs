@@ -22,15 +22,6 @@ let sumVotes (preference: int) (aggregatedVoteList: AggregatedVote list) =
     |> List.groupBy (fun (a, b) -> a) // aggregate by candidateId
     |> List.map (fun (key , values) -> (key, List.sumBy snd values)) // sum votes for candidate - I don't like: List.sumBy snd values
 
-let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult : PollResult =
-    
-    
-    let numberResults = List.length pollResult.items
-    match numberResults with
-    //| 0 -> calculateFirstPoll 
-    | numberOfSeats -> pollResult
-    | _ -> iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult
-
 let voteSumToPollResult droopQuota votesSum : PollResult = 
     let filteredItems = List.filter (fun (c, v) -> v >= droopQuota) votesSum
     let pollResultList = List.map (fun (c, v) -> {candidateId = c; numberOfVotes = v; elected = true}) filteredItems
@@ -42,6 +33,20 @@ let isPollFinished numberOfSeats pollResult =
     List.filter (fun x -> x.elected) pollResult.items
     |> List.length >= numberOfSeats
 
+let getSurplus droopQuota pollResult = 
+    pollResult.items
+    |> List.filter (fun x -> x.elected && x.numberOfVotes > droopQuota) 
+    |> List.map (fun x -> (x.candidateId, x.numberOfVotes - droopQuota))
+
+let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult : PollResult =
+    let surplusList = getSurplus droopQuota pollResult
+    
+    let numberResults = List.length pollResult.items
+    match numberResults with
+    //| 0 -> calculateFirstPoll 
+    | numberOfSeats -> pollResult
+    | _ -> iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult
+
 // Only valid and sorted ballots
 let mainCaluclation (poll: Poll) (voteList: Ballot list) : PollResult =
     let totalValidPoll = List.length voteList
@@ -50,6 +55,8 @@ let mainCaluclation (poll: Poll) (voteList: Ballot list) : PollResult =
     // first round
     let votesSum = sumVotes 1 aggregatedVotes
     let pollResult = voteSumToPollResult droopQuota votesSum
-
-
-    iterationLoop poll.numberOfSeats droopQuota aggregatedVotes pollResult
+    let pollFinished = isPollFinished poll.numberOfSeats pollResult
+    if pollFinished then
+        pollResult
+    else
+        iterationLoop poll.numberOfSeats droopQuota aggregatedVotes pollResult
