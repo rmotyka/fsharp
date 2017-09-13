@@ -11,31 +11,23 @@ let calculateDroopQuota numberOfSeats totalValidPoll =
 
 let aggregateVotes (voteList: Ballot list) =
     List.countBy (id) voteList 
-     |> List.map (fun (b, c) -> 
-         {ballot = b; numberOfVotes = c})
+     |> List.map (fun (b, c) -> {ballot = b; numberOfVotes = c})
 
+let sumVotes (preference: int) (aggregatedVoteList: AggregatedVote list) =
+    let getBallotFirstVoteItem preference ballot = 
+       let voteItem = List.find (fun x -> x.preference = preference) ballot
+       voteItem.candidateId
 
-let sumVotes preference (aggregatedVoteList: AggregatedVote list) =
-    let aggregteFun acc x =
-        let item = List.find (fun x )
-
-    List.fold (aggregteFun) [] aggregatedVoteList
-
-    // let getBallotFirstCandidate ballot = 
-    //     let voteItem = List.find (fun x -> x.preference = preference) ballot
-    //     voteItem.candidateId
-
-    // let firstPlaces = List.map (fun x -> (getBallotFirstCandidate x.ballot, x.numberOfVotes)) aggregatedVoteList
-    // List.sumBy  firstPlaces // TODO: aggregate
+    let firstPlaces = List.map (fun x -> (getBallotFirstVoteItem 1 x.ballot, x.numberOfVotes)) aggregatedVoteList
+    List.groupBy (fun (a, b) -> a) firstPlaces
+    |> List.map (fun (key , values) -> (key, values |> List.sumBy snd))
 
 let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult : PollResult =
     let numberResults = List.length pollResult.items
-    match numberResults then
-    | 0 -> calculateFirstPoll 
+    match numberResults with
+    //| 0 -> calculateFirstPoll 
     | numberOfSeats -> pollResult
     | _ -> iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult
-    
-
 
 // Only valid and sorted ballots
 let mainCaluclation (poll: Poll) (voteList: Ballot list) : PollResult =
