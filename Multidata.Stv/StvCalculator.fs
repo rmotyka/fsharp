@@ -38,9 +38,14 @@ let getSurplus droopQuota pollResult =
     |> List.filter (fun x -> x.numberOfVotes > droopQuota)
     |> List.map (fun x -> (x.candidateId, x.numberOfVotes - droopQuota))
 
+let addSurplus pollResult surplusList: PollResult =
+
+    pollResult
+
 let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult : PollResult =
     let surplusList = getSurplus droopQuota pollResult
-    
+    let pollResultWithSurplus = addSurplus pollResult surplusList
+
     let numberResults = List.length pollResult.items
     match numberResults with
     //| 0 -> calculateFirstPoll 
@@ -48,7 +53,7 @@ let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult : P
     | _ -> iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult
 
 // Only valid and sorted ballots
-let mainCaluclation (poll: Poll) (voteList: Ballot list) : PollResult =
+let mainCalculation (poll: Poll) (voteList: Ballot list) : PollResult =
     let totalValidPoll = List.length voteList
     let droopQuota = calculateDroopQuota poll.numberOfSeats totalValidPoll
     let aggregatedVotes = aggregateVotes voteList
