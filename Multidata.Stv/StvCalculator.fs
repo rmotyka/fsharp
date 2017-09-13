@@ -13,12 +13,12 @@ let aggregateVotes (voteList: Ballot list) =
     List.countBy (id) voteList 
      |> List.map (fun (b, c) -> {ballot = b; numberOfVotes = c})
 
-let sumVotes (preference: int) (aggregatedVoteList: AggregatedVote list) =
-    let getBallotFirstVoteItem preference ballot = 
-       let voteItem = List.find (fun x -> x.preference = preference) ballot
-       voteItem.candidateId
+let getBallotFirstCandidateId preference ballot = 
+   let voteItem = List.find (fun x -> x.preference = preference) ballot
+   voteItem.candidateId
 
-    let firstPlaces = List.map (fun x -> (getBallotFirstVoteItem 1 x.ballot, x.numberOfVotes)) aggregatedVoteList
+let sumVotes (preference: int) (aggregatedVoteList: AggregatedVote list) =
+    let firstPlaces = List.map (fun x -> (getBallotFirstCandidateId 1 x.ballot, x.numberOfVotes)) aggregatedVoteList
     List.groupBy (fun (a, b) -> a) firstPlaces
     |> List.map (fun (key , values) -> (key, values |> List.sumBy snd))
 

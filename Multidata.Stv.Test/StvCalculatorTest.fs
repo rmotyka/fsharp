@@ -15,6 +15,16 @@ let ``droop quota`` () =
     Assert.Equal(34, res)
 
 [<Fact>]
+let ``getBallotFirstCandidateId`` () =
+    let ballot = [
+        {VoteItem.candidateId = 1; preference = 2};
+        {VoteItem.candidateId = 2; preference = 1}
+    ]
+
+    let res = getBallotFirstCandidateId 1 ballot
+    Assert.Equal(2, res)
+
+[<Fact>]
 let ``sumVotes`` () =
     let aggregatedVoteList = [
         {
@@ -32,7 +42,7 @@ let ``sumVotes`` () =
             {VoteItem.candidateId = 3; preference = 1};
             {VoteItem.candidateId = 4; preference = 2}
         ]; numberOfVotes = 3
-        }              
+        }
     ]
 
     let res = Multidata.Stv.StvCalculator.sumVotes 1 aggregatedVoteList
@@ -41,8 +51,8 @@ let ``sumVotes`` () =
     Assert.Equal(3, v1)
     let (c3, v3) = res.[1]
     Assert.Equal(3, c3)
-    Assert.Equal(3, v3)    
-(*
+    Assert.Equal(3, v3)
+
 [<Fact>]
 let ``aggregate votes`` () =
     let ballotList = [
@@ -67,6 +77,11 @@ let ``aggregate votes`` () =
     Assert.Equal(2, res.[0].numberOfVotes)
     Assert.Equal(1, res.[1].numberOfVotes)
 
+
+
+
+
+(* // TODO: fix that test
 [<Fact>]
 let ``mainCaluclation`` () =
     let candidate1 = {Candidate.candidateId = 1; Candidate.name = "Smith"}
@@ -79,5 +94,4 @@ let ``mainCaluclation`` () =
     let items = res.items
 
     Assert.Equal(1, items.Item(0).candidateId)
-
-    *)
+*)
