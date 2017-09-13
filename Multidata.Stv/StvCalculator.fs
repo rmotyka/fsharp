@@ -16,12 +16,17 @@ let aggregateVotes (voteList: Ballot list) =
 
 
 let sumVotes preference (aggregatedVoteList: AggregatedVote list) =
-    let getBallotFirstCandidate ballot = 
-        let voteItem = List.find (fun x -> x.preference = preference) ballot
-        voteItem.candidateId
+    let aggregteFun acc x =
+        let item = List.find (fun x )
 
-    let firstPlaces = List.map (fun x -> (getBallotFirstCandidate x.ballot, x.numberOfVotes)) aggregatedVoteList
-    List.sumBy  firstPlaces // TODO: aggregate
+    List.fold (aggregteFun) [] aggregatedVoteList
+
+    // let getBallotFirstCandidate ballot = 
+    //     let voteItem = List.find (fun x -> x.preference = preference) ballot
+    //     voteItem.candidateId
+
+    // let firstPlaces = List.map (fun x -> (getBallotFirstCandidate x.ballot, x.numberOfVotes)) aggregatedVoteList
+    // List.sumBy  firstPlaces // TODO: aggregate
 
 let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult : PollResult =
 
