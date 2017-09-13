@@ -35,7 +35,7 @@ let isPollFinished numberOfSeats pollResult =
 
 let getSurplus droopQuota pollResult = 
     pollResult.items
-    |> List.filter (fun x -> x.elected && x.numberOfVotes > droopQuota) 
+    |> List.filter (fun x -> x.numberOfVotes > droopQuota)
     |> List.map (fun x -> (x.candidateId, x.numberOfVotes - droopQuota))
 
 let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult : PollResult =
