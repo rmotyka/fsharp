@@ -16,13 +16,13 @@ let aggregateVotes (voteList: Ballot list) =
 
 
 let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult : PollResult =
+    let numberResults = List.length pollResult.items
+    match numberResults then
+    | 0 -> calculateFirstPoll 
+    | numberOfSeats -> pollResult
+    | _ -> iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult
+    
 
-
-
-    if List.length pollResult.items = numberOfSeats then
-        pollResult
-    else
-        iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult 
 
 // Only valid and sorted ballots
 let mainCaluclation (poll: Poll) (voteList: Ballot list) : PollResult =
