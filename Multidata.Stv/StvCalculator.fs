@@ -18,9 +18,9 @@ let getBallotFirstCandidateId preference ballot =
    voteItem.candidateId
 
 let sumVotes (preference: int) (aggregatedVoteList: AggregatedVote list) =
-    let firstPlaces = List.map (fun x -> (getBallotFirstCandidateId 1 x.ballot, x.numberOfVotes)) aggregatedVoteList
-    List.groupBy (fun (a, b) -> a) firstPlaces
-    |> List.map (fun (key , values) -> (key, values |> List.sumBy snd))
+    List.map (fun x -> (getBallotFirstCandidateId 1 x.ballot, x.numberOfVotes)) aggregatedVoteList // simplify the structure
+    |> List.groupBy (fun (a, b) -> a) // aggregate by candidateId
+    |> List.map (fun (key , values) -> (key, List.sumBy snd values)) // sum votes for candidate - I don't like: List.sumBy snd values
 
 let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResult : PollResult =
     let numberResults = List.length pollResult.items
