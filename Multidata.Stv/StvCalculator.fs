@@ -37,6 +37,10 @@ let voteSumToPollResult droopQuota votesSum : PollResult =
 
     let pollResult = {items = pollResultList}
     pollResult
+    
+let isPollFinished numberOfSeats pollResult =
+    List.filter (fun x -> x.elected) pollResult.items
+    |> List.length >= numberOfSeats
 
 // Only valid and sorted ballots
 let mainCaluclation (poll: Poll) (voteList: Ballot list) : PollResult =

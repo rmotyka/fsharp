@@ -54,6 +54,23 @@ let ``sumVotes`` () =
     Assert.Equal(3, v3)
 
 [<Fact>]
+let ``isPollFinished true`` () = 
+    let pollResult = {items = [
+        {candidateId = 1; numberOfVotes = 2; elected = true};
+        {candidateId = 2; numberOfVotes = 2; elected = true};
+        {candidateId = 3; numberOfVotes = 2; elected = true};
+     ] }
+    let res = isPollFinished 2 pollResult
+    Assert.True(res)
+
+let ``isPollFinished false`` () = 
+    let pollResult = {items = [
+        {candidateId = 1; numberOfVotes = 2; elected = true};
+     ] }
+    let res = isPollFinished 2 pollResult
+    Assert.False(res)
+
+[<Fact>]
 let ``aggregate votes`` () =
     let ballotList = [
         [
