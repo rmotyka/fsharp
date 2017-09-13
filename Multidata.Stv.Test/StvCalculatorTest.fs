@@ -27,18 +27,17 @@ let ``getBallotFirstCandidateId`` () =
 [<Fact>]
 let ``sumVotes`` () =
     let aggregatedVoteList = [
-        {
-            ballot = [
+        {AggregatedVote.ballot = [
                 {VoteItem.candidateId = 1; preference = 1};
                 {VoteItem.candidateId = 2; preference = 2}
             ]; numberOfVotes = 1
         };
-        {ballot = [
+        {AggregatedVote.ballot = [
             {VoteItem.candidateId = 1; preference = 1};
             {VoteItem.candidateId = 2; preference = 2}
         ]; numberOfVotes = 2
         };
-        {ballot = [
+        {AggregatedVote.ballot = [
             {VoteItem.candidateId = 3; preference = 1};
             {VoteItem.candidateId = 4; preference = 2}
         ]; numberOfVotes = 3
