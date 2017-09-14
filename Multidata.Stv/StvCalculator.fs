@@ -46,39 +46,37 @@ let getNextCandidateId ballot candidateId =
     | None -> None
 
 // TODO: test
+let getCandidateTotalVotes pollResultItemList candidateId = 
+    let winnersResult = List.find (fun x -> x.candidateId = candidateId) pollResultItemList
+    winnersResult.numberOfVotes
+
+// TODO: test
+let calculateSurplusVotesToAdd votesForTheNextPreference totalWinnerVotes surplusVotes = 
+    (votesForTheNextPreference / totalWinnerVotes) * surplusVotes
+
+// TODO: test
+let addNumberOfVotesToResult pollResultItemList candidateId votesToAdd = 
+    List.map (fun x -> 
+    if x.candidateId = candidateId then
+        {candidateId = x.candidateId; numberOfVotes = x.numberOfVotes + votesToAdd; elected = false}
+    else
+        x
+    ) pollResultItemList
+
+// TODO: test
 let addOneSurplus aggregatedVoteList pollResultItemList surplus = 
-    let (c, v) = surplus
-    let winnersResult = List.find (fun x -> x.candidateId = c) pollResultItemList
+    let (winnerCandidateId, surplusNumberOfVotes) = surplus
+    let winnerTotalVotes = getCandidateTotalVotes pollResultItemList winnerCandidateId
     let position = 1 // TODO: get from arguments
-    let aggregateVotes = getAggregatedVoteWhereCandidateIsOnPosiotion position aggregatedVoteList c
+    let aggregateVotes = getAggregatedVoteWhereCandidateIsOnPosiotion position aggregatedVoteList winnerCandidateId
     List.fold (fun acc aggregateVote -> 
-        let maybeNextCandidateId = getNextCandidateId aggregateVote.ballot c
+        let maybeNextCandidateId = getNextCandidateId aggregateVote.ballot winnerCandidateId
         match maybeNextCandidateId with
         | Some nextCandidateId -> 
-            let votesToAdd = (aggregateVote.numberOfVotes / winnersResult.numberOfVotes) * v
-            List.map (fun x -> 
-                if x.candidateId = nextCandidateId then
-                    {candidateId = x.candidateId; numberOfVotes = x.numberOfVotes + votesToAdd; elected = false}
-                else
-                    x
-                ) acc
+            calculateSurplusVotesToAdd aggregateVote.numberOfVotes winnerTotalVotes surplusNumberOfVotes
+            |> addNumberOfVotesToResult acc nextCandidateId
         | None -> acc
     ) pollResultItemList aggregateVotes
-
-
-    // //for a in aggregatedVoteList do
-    //     let maybeNextCandidateId = getNextCandidateId a.ballot c
-
-    //     match maybeNextCandidateId with
-    //     | Some nextCandidateId -> 
-    //         let votesToAdd = (a.numberOfVotes / winnersResult.numberOfVotes) * v
-    //         List.map (fun x -> 
-    //             if x.candidateId = nextCandidateId then
-    //                 {candidateId = x.candidateId; numberOfVotes = x.numberOfVotes + votesToAdd; elected = false}
-    //             else
-    //                 x
-    //             ) pollResult
-    //     | None -> ()
 
 // TODO: test
 let addSurplus aggregatedVoteList pollResultItemList surplusList =
