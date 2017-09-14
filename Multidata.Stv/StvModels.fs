@@ -23,9 +23,9 @@ type PollResultItem = {
     elected: bool;
 }
 
-type PollResult = {
-    items: PollResultItem list
-}
+// type PollResult = {
+//     items: PollResultItem list
+// }
 
 // --- temporary types
 
