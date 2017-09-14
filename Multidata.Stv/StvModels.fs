@@ -5,12 +5,12 @@ type Candidate = {
     name: string
 }
 
-type VoteItem = {
-    candidateId: int;
-    preference: int
-}
+// type VoteItem = {
+//     candidateId: int;
+//     preference: int
+// }
 
-type Ballot = VoteItem list
+type Ballot = int list // candidate in order of preference
 
 type Poll = { 
     numberOfSeats: int;

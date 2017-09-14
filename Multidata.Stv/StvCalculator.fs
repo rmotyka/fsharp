@@ -13,9 +13,8 @@ let aggregateVotes (voteList: Ballot list) =
     List.countBy (id) voteList 
      |> List.map (fun (b, c) -> {ballot = b; numberOfVotes = c})
 
-let getBallotFirstCandidateId preference ballot = 
-   let voteItem = List.find (fun x -> x.preference = preference) ballot
-   voteItem.candidateId
+let getBallotFirstCandidateId preference (ballot: Ballot) = 
+    ballot.[preference + 1]
 
 let sumVotes (preference: int) (aggregatedVoteList: AggregatedVote list) =
     List.map (fun x -> (getBallotFirstCandidateId 1 x.ballot, x.numberOfVotes)) aggregatedVoteList // simplify the structure
@@ -38,12 +37,10 @@ let getSurplus droopQuota pollResult =
     |> List.filter (fun x -> x.numberOfVotes > droopQuota)
     |> List.map (fun x -> (x.candidateId, x.numberOfVotes - droopQuota))
 
-let getAggregatedVoteWhereCandidateIsOnPosiotion position aggregatedVoteList candidateId = 
-    List.filter () aggregatedVoteList
-
 let addSurplus aggregatedVoteList pollResult surplusList: PollResult =
     let addOneSurplus pollResult surplus = 
         let (c, v) = surplus
+        let aggregateVotesToFill = List.filter (fun x -> x.ballot.[1] = c) aggregatedVoteList
 
     List.fold (fun acc x -> addOneSurplus pollResult x) pollResult surplusList
 
