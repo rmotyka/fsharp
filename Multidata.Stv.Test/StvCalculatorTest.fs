@@ -73,6 +73,22 @@ let ``aggregate votes`` () =
     Assert.Equal(2, res.[0].numberOfVotes)
     Assert.Equal(1, res.[1].numberOfVotes)
 
+[<Fact>]
+let ``getAggregatedVoteWhereCandidateIsOnPosiotion`` () =
+    let position = 1
+    let aggregatedVoteList = [
+        {AggregatedVote.ballot = [ 1; 2 ]; numberOfVotes = 1};
+        {AggregatedVote.ballot = [ 1; 2 ]; numberOfVotes = 2};
+        {AggregatedVote.ballot = [ 3; 4 ]; numberOfVotes = 3}
+    ]
+    let candidateId = 1
+    let res = getAggregatedVoteWhereCandidateIsOnPosiotion position aggregatedVoteList candidateId
+    
+    Assert.Equal(2, List.length res)
+    Assert.Equal(1, res.[0].numberOfVotes)
+    Assert.Equal(2, res.[1].numberOfVotes)
+
+
 // https://en.wikipedia.org/wiki/Counting_single_transferable_votes
 [<Fact>]
 let ``mainCaluclation`` () =

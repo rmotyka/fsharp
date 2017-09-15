@@ -28,7 +28,6 @@ let getSurplus droopQuota (pollResultItemList: PollResultItem list) =
     |> List.filter (fun x -> x.numberOfVotes > droopQuota)
     |> List.map (fun x -> (x.candidateId, x.numberOfVotes - droopQuota))
 
-// TODO: test
 let getAggregatedVoteWhereCandidateIsOnPosiotion position aggregatedVoteList candidateId = 
     List.filter (fun x -> List.item (position - 1) x.ballot = candidateId) aggregatedVoteList
 
