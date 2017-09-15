@@ -88,6 +88,22 @@ let ``getAggregatedVoteWhereCandidateIsOnPosiotion`` () =
     Assert.Equal(1, res.[0].numberOfVotes)
     Assert.Equal(2, res.[1].numberOfVotes)
 
+[<Fact>]
+let ``getNextCandidateId`` () =
+    let ballot = [4;5;6]
+
+    let res1 = getNextCandidateId ballot 1
+    Assert.True(res1.IsNone)
+
+    let res4 = getNextCandidateId ballot 4
+    Assert.Equal(5, res4.Value)
+
+    let res5 = getNextCandidateId ballot 5
+    Assert.Equal(6, res5.Value)
+
+    let res6 = getNextCandidateId ballot 6
+    Assert.True(res6.IsNone)
+
 
 // https://en.wikipedia.org/wiki/Counting_single_transferable_votes
 [<Fact>]
