@@ -73,17 +73,19 @@ let ``aggregate votes`` () =
     Assert.Equal(2, res.[0].numberOfVotes)
     Assert.Equal(1, res.[1].numberOfVotes)
 
-(* // TODO: fix that test
+// https://en.wikipedia.org/wiki/Counting_single_transferable_votes
 [<Fact>]
 let ``mainCaluclation`` () =
-    let candidate1 = {Candidate.candidateId = 1; Candidate.name = "Smith"}
-    let candidate2 = {Candidate.candidateId = 2; Candidate.name = "Gordon"}
-    let candidates = [candidate1; candidate2]
-    let poll = {numberOfSeats = 12; candidates = candidates}
-    let voteList = [[{candidateId = 1; preference = 1}]]
-    let res = mainCaluclation poll voteList
-
-    let items = res.items
-
-    Assert.Equal(1, items.Item(0).candidateId)
-*)
+    let candidates = [
+        {Candidate.candidateId = 1; Candidate.name = "Andrea"};
+        {Candidate.candidateId = 2; Candidate.name = "Brad"};
+        {Candidate.candidateId = 3; Candidate.name = "Carter"};
+        {Candidate.candidateId = 4; Candidate.name = "Delilah"};
+     ]
+    let poll = {numberOfSeats = 2; candidates = candidates}
+    let voteList = [
+        for i in 1 .. 16 -> [1; 2; 3; 4];
+        for i in 1 .. 24 -> [1; 3; 2; 4];
+        for i in 1 .. 17 -> [4; 1; 2; 3];
+    ]
+    let res = mainCalculation poll voteList

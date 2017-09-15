@@ -3,10 +3,6 @@ module Multidata.Stv.StvCalculator
 open StvModels
 open Multidata.Stv.StvQuota
 
-// let calculateNumberOfVotes (voteList: Ballot) =
-//     let filterFirstVotes =  List.filter (fun x -> x.preference = 1)
-//     let firstPlaces = List.collect (fun x -> filterFirstVotes x) voteList
-
 let aggregateVotes (voteList: Ballot list) =
     List.countBy (id) voteList 
      |> List.map (fun (b, c) -> {ballot = b; numberOfVotes = c})
