@@ -44,7 +44,6 @@ let getCandidateTotalVotes pollResultItemList candidateId =
 let calculateSurplusVotesToAdd votesForTheNextPreference totalWinnerVotes surplusVotes = 
     (int)(((float)votesForTheNextPreference / (float)totalWinnerVotes) * (float)surplusVotes)
 
-// TODO: test
 let addNumberOfVotesToResult pollResultItemList candidateId votesToAdd = 
     List.map (fun x -> 
     if x.candidateId = candidateId then

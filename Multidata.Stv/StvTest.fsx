@@ -16,3 +16,19 @@ let voteList = [
 ]
 let res = mainCalculation poll voteList
 printfn "Aggregate: %A" res
+
+// ------------------------------------------------
+
+let aggregatedVoteList = [
+    {ballot = [ 1; 2; 3 ]; numberOfVotes = 40};
+    {ballot = [ 1; 2; 3 ]; numberOfVotes = 50};
+    {ballot = [ 3; 4; 1 ]; numberOfVotes = 60}
+]
+let pollResultItemList = [
+    {candidateId = 1; numberOfVotes = 4; elected = true};
+    {candidateId = 2; numberOfVotes = 5; elected = true};
+    {candidateId = 3; numberOfVotes = 6; elected = true};
+]
+let surplus = (1, 20)
+let res1 = addOneSurplus aggregatedVoteList pollResultItemList surplus
+printfn "RES 1: %A" res1

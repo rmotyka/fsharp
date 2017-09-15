@@ -123,9 +123,59 @@ let ``calculateSurplusVotesToAdd`` () =
     Assert.Equal(4, res)
 
 [<Fact>]
-let ``addNumberOfVotesToResult`` () =
-    
+let ``addNumberOfVotesToResult add`` () =
+    let pollResultItemList = [
+        {candidateId = 1; numberOfVotes = 4; elected = true};
+        {candidateId = 2; numberOfVotes = 5; elected = true};
+        {candidateId = 3; numberOfVotes = 6; elected = true};
+    ]
+    let candidateId = 2
+    let votesToAdd = 10
     let res = addNumberOfVotesToResult pollResultItemList candidateId votesToAdd
+    Assert.Equal(4, res.[0].numberOfVotes)
+    Assert.Equal(15, res.[1].numberOfVotes)
+    Assert.Equal(6, res.[2].numberOfVotes)
+
+[<Fact>]
+let ``addNumberOfVotesToResult substract`` () =
+    let pollResultItemList = [
+        {candidateId = 1; numberOfVotes = 4; elected = true};
+        {candidateId = 2; numberOfVotes = 5; elected = true};
+        {candidateId = 3; numberOfVotes = 6; elected = true};
+    ]
+    let candidateId = 2
+    let votesToAdd = -10
+    let res = addNumberOfVotesToResult pollResultItemList candidateId votesToAdd
+    Assert.Equal(4, res.[0].numberOfVotes)
+    Assert.Equal(-5, res.[1].numberOfVotes)
+    Assert.Equal(6, res.[2].numberOfVotes)
+
+// https://en.wikipedia.org/wiki/Counting_single_transferable_votes
+[<Fact>]
+let ``addOneSurplus`` () =
+    let aggregatedVoteList = [
+        {AggregatedVote.ballot = [ 1; 2; 3; 4 ]; numberOfVotes = 16};
+        {AggregatedVote.ballot = [ 1; 3; 2; 4 ]; numberOfVotes = 24};
+        {AggregatedVote.ballot = [ 4; 1; 2; 3 ]; numberOfVotes = 17}
+    ]
+    let pollResultItemList = [
+        {candidateId = 1; numberOfVotes = 40; elected = true};
+        {candidateId = 2; numberOfVotes = 0; elected = false};
+        {candidateId = 3; numberOfVotes = 0; elected = false};
+        {candidateId = 4; numberOfVotes = 17; elected = false};
+    ]
+    let surplus = (1, 20)
+    let res = addOneSurplus aggregatedVoteList pollResultItemList surplus
+    let expected = [
+        {candidateId = 1; numberOfVotes = 20; elected = true};
+        {candidateId = 2; numberOfVotes = 8; elected = true};
+        {candidateId = 3; numberOfVotes = 12; elected = true};
+        {candidateId = 4; numberOfVotes = 17; elected = true};
+    ]
+
+    Assert.Equal(expected.[0], res.[0])
+    Assert.Equal(expected.[1], res.[1])
+    Assert.Equal(expected.[2], res.[2])
 
 // https://en.wikipedia.org/wiki/Counting_single_transferable_votes
 [<Fact>]
