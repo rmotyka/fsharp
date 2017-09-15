@@ -114,6 +114,19 @@ let ``getCandidateTotalVotes`` () =
     let res = getCandidateTotalVotes pollResultItemList 2
     Assert.Equal(5, res)
 
+[<Fact>]
+let ``calculateSurplusVotesToAdd`` () =
+    let votesForTheNextPreference = 8
+    let totalWinnerVotes = 12
+    let surplusVotes = 6
+    let res = calculateSurplusVotesToAdd votesForTheNextPreference totalWinnerVotes surplusVotes
+    Assert.Equal(4, res)
+
+[<Fact>]
+let ``addNumberOfVotesToResult`` () =
+    
+    let res = addNumberOfVotesToResult pollResultItemList candidateId votesToAdd
+
 // https://en.wikipedia.org/wiki/Counting_single_transferable_votes
 [<Fact>]
 let ``mainCaluclation`` () =
