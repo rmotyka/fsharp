@@ -104,6 +104,15 @@ let ``getNextCandidateId`` () =
     let res6 = getNextCandidateId ballot 6
     Assert.True(res6.IsNone)
 
+[<Fact>]
+let ``getCandidateTotalVotes`` () =
+    let pollResultItemList = [
+        {candidateId = 1; numberOfVotes = 4; elected = true};
+        {candidateId = 2; numberOfVotes = 5; elected = true};
+        {candidateId = 3; numberOfVotes = 6; elected = true};
+     ]
+    let res = getCandidateTotalVotes pollResultItemList 2
+    Assert.Equal(5, res)
 
 // https://en.wikipedia.org/wiki/Counting_single_transferable_votes
 [<Fact>]

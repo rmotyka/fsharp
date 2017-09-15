@@ -31,14 +31,12 @@ let getSurplus droopQuota (pollResultItemList: PollResultItem list) =
 let getAggregatedVoteWhereCandidateIsOnPosiotion position aggregatedVoteList candidateId = 
     List.filter (fun x -> List.item (position - 1) x.ballot = candidateId) aggregatedVoteList
 
-// TODO: test
 let getNextCandidateId ballot candidateId = 
     let maybeIndex = List.tryFindIndex (fun x -> x = candidateId) ballot
     match maybeIndex with
     | Some i -> List.tryItem (i + 1) ballot
     | None -> None
 
-// TODO: test
 let getCandidateTotalVotes pollResultItemList candidateId = 
     let winnersResult = List.find (fun x -> x.candidateId = candidateId) pollResultItemList
     winnersResult.numberOfVotes

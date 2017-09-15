@@ -5,10 +5,6 @@ type Candidate = {
     name: string
 }
 
-// type VoteItem = {
-//     candidateId: int;
-//     preference: int
-// }
 
 type Ballot = int list // candidate in order of preference
 
@@ -22,10 +18,6 @@ type PollResultItem = {
     numberOfVotes: int;
     elected: bool;
 }
-
-// type PollResult = {
-//     items: PollResultItem list
-// }
 
 // --- temporary types
 
