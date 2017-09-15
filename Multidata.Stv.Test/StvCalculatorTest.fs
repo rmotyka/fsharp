@@ -168,9 +168,9 @@ let ``addOneSurplus`` () =
     let res = addOneSurplus aggregatedVoteList pollResultItemList surplus
     let expected = [
         {candidateId = 1; numberOfVotes = 20; elected = true};
-        {candidateId = 2; numberOfVotes = 8; elected = true};
-        {candidateId = 3; numberOfVotes = 12; elected = true};
-        {candidateId = 4; numberOfVotes = 17; elected = true};
+        {candidateId = 2; numberOfVotes = 8; elected = false};
+        {candidateId = 3; numberOfVotes = 12; elected = false};
+        {candidateId = 4; numberOfVotes = 17; elected = false};
     ]
 
     Assert.Equal(expected.[0], res.[0])

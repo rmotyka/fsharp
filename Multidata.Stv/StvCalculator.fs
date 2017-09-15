@@ -47,7 +47,7 @@ let calculateSurplusVotesToAdd votesForTheNextPreference totalWinnerVotes surplu
 let addNumberOfVotesToResult pollResultItemList candidateId votesToAdd = 
     List.map (fun x -> 
     if x.candidateId = candidateId then
-        {candidateId = x.candidateId; numberOfVotes = x.numberOfVotes + votesToAdd; elected = false}
+        {candidateId = x.candidateId; numberOfVotes = x.numberOfVotes + votesToAdd; elected = x.elected}
     else
         x
     ) pollResultItemList
@@ -64,7 +64,7 @@ let addOneSurplus aggregatedVoteList pollResultItemList surplus =
         | Some nextCandidateId -> 
             let votesToAdd = calculateSurplusVotesToAdd aggregateVote.numberOfVotes winnerTotalVotes surplusNumberOfVotes
             let tempPollResult = addNumberOfVotesToResult acc nextCandidateId votesToAdd
-            addNumberOfVotesToResult tempPollResult nextCandidateId -votesToAdd
+            addNumberOfVotesToResult tempPollResult winnerCandidateId -votesToAdd
         | None -> acc
     ) pollResultItemList aggregateVotes
 
