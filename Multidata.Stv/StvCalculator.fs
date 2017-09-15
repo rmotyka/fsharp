@@ -1,9 +1,7 @@
 module Multidata.Stv.StvCalculator
 
 open StvModels
-
-let calculateDroopQuota numberOfSeats totalValidPoll = 
-    (float totalValidPoll + float 1) / (float numberOfSeats + float 1) |> ceil |> int
+open Multidata.Stv.StvQuota
 
 // let calculateNumberOfVotes (voteList: Ballot) =
 //     let filterFirstVotes =  List.filter (fun x -> x.preference = 1)

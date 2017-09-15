@@ -1,4 +1,4 @@
-module Multidata.Stv.Test.StvCalculator
+module Multidata.Stv.Test.StvCalculatorTest
 
 open System
 open Xunit
@@ -10,16 +10,8 @@ let ``My test`` () =
     Assert.True(true)
 
 [<Fact>]
-let ``droop quota`` () =
-    let res = calculateDroopQuota 2 100
-    Assert.Equal(34, res)
-
-[<Fact>]
 let ``getBallotFirstCandidateId`` () =
-    let ballot = [
-        {VoteItem.candidateId = 1; preference = 2};
-        {VoteItem.candidateId = 2; preference = 1}
-    ]
+    let ballot = [ 2; 1 ]
 
     let res = getBallotFirstCandidateId 1 ballot
     Assert.Equal(2, res)
@@ -27,21 +19,9 @@ let ``getBallotFirstCandidateId`` () =
 [<Fact>]
 let ``sumVotes`` () =
     let aggregatedVoteList = [
-        {AggregatedVote.ballot = [
-                {VoteItem.candidateId = 1; preference = 1};
-                {VoteItem.candidateId = 2; preference = 2}
-            ]; numberOfVotes = 1
-        };
-        {AggregatedVote.ballot = [
-            {VoteItem.candidateId = 1; preference = 1};
-            {VoteItem.candidateId = 2; preference = 2}
-        ]; numberOfVotes = 2
-        };
-        {AggregatedVote.ballot = [
-            {VoteItem.candidateId = 3; preference = 1};
-            {VoteItem.candidateId = 4; preference = 2}
-        ]; numberOfVotes = 3
-        }
+        {AggregatedVote.ballot = [ 1; 2 ]; numberOfVotes = 1};
+        {AggregatedVote.ballot = [ 1; 2 ]; numberOfVotes = 2};
+        {AggregatedVote.ballot = [ 3; 4 ]; numberOfVotes = 3}
     ]
 
     let res = Multidata.Stv.StvCalculator.sumVotes 1 aggregatedVoteList
@@ -54,28 +34,28 @@ let ``sumVotes`` () =
 
 [<Fact>]
 let ``isPollFinished true`` () = 
-    let pollResult = {items = [
+    let pollResult = [
         {candidateId = 1; numberOfVotes = 2; elected = true};
         {candidateId = 2; numberOfVotes = 2; elected = true};
         {candidateId = 3; numberOfVotes = 2; elected = true};
-     ] }
+     ]
     let res = isPollFinished 2 pollResult
     Assert.True(res)
 
 let ``isPollFinished false`` () = 
-    let pollResult = {items = [
+    let pollResult = [
         {candidateId = 1; numberOfVotes = 2; elected = true};
-     ] }
+     ]
     let res = isPollFinished 2 pollResult
     Assert.False(res)
 
 [<Fact>]
 let ``getSurplus`` () =
-    let pollResult = {items = [
+    let pollResult = [
         {candidateId = 1; numberOfVotes = 4; elected = true};
         {candidateId = 2; numberOfVotes = 5; elected = true};
         {candidateId = 3; numberOfVotes = 6; elected = true};
-     ] }
+     ]
     let res = getSurplus 5 pollResult
     Assert.Equal(1, List.length res)
     let (c, v) = res.[0]
@@ -84,20 +64,7 @@ let ``getSurplus`` () =
 
 [<Fact>]
 let ``aggregate votes`` () =
-    let ballotList = [
-        [
-            {VoteItem.candidateId = 1; preference = 1};
-            {VoteItem.candidateId = 2; preference = 2};
-        ];
-        [
-            {VoteItem.candidateId = 1; preference = 1};
-            {VoteItem.candidateId = 2; preference = 2};
-        ];
-        [
-            {VoteItem.candidateId = 1; preference = 1};
-            {VoteItem.candidateId = 3; preference = 2};
-        ]    
-    ]
+    let ballotList = [[1; 2]; [1; 2]; [1; 3]]
 
     let res = aggregateVotes ballotList
 
@@ -105,10 +72,6 @@ let ``aggregate votes`` () =
     Assert.Equal(2, numberOfAggregates)
     Assert.Equal(2, res.[0].numberOfVotes)
     Assert.Equal(1, res.[1].numberOfVotes)
-
-
-
-
 
 (* // TODO: fix that test
 [<Fact>]
