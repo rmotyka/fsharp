@@ -89,3 +89,5 @@ let ``mainCaluclation`` () =
         for i in 1 .. 17 -> [4; 1; 2; 3];
     ]
     let res = mainCalculation poll voteList
+
+    Assert.True(true)

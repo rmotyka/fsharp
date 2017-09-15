@@ -67,8 +67,9 @@ let addOneSurplus aggregatedVoteList pollResultItemList surplus =
         let maybeNextCandidateId = getNextCandidateId aggregateVote.ballot winnerCandidateId
         match maybeNextCandidateId with
         | Some nextCandidateId -> 
-            calculateSurplusVotesToAdd aggregateVote.numberOfVotes winnerTotalVotes surplusNumberOfVotes
-            |> addNumberOfVotesToResult acc nextCandidateId
+            let votesToAdd = calculateSurplusVotesToAdd aggregateVote.numberOfVotes winnerTotalVotes surplusNumberOfVotes
+            let tempPollResult = addNumberOfVotesToResult acc nextCandidateId votesToAdd
+            addNumberOfVotesToResult tempPollResult nextCandidateId -votesToAdd
         | None -> acc
     ) pollResultItemList aggregateVotes
 
