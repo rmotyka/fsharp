@@ -187,6 +187,17 @@ let ``addSurplus`` () =
     Assert.Equal(expected.[0], res.[0])
     Assert.Equal(expected.[1], res.[1])
     Assert.Equal(expected.[2], res.[2])
+
+let ``getLastCandidate`` () =
+    let pollResultItemList = [
+        {candidateId = 1; numberOfVotes = 40; elected = true};
+        {candidateId = 2; numberOfVotes = 3; elected = false};
+        {candidateId = 3; numberOfVotes = 5; elected = false};
+        {candidateId = 4; numberOfVotes = 17; elected = false};
+    ]
+    let res = getLastCandidate pollResultItemList
+    Assert.Equal(3, res.numberOfVotes)
+
 (*
 // https://en.wikipedia.org/wiki/Counting_single_transferable_votes
 [<Fact>]
