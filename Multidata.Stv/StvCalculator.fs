@@ -15,9 +15,13 @@ let sumVotes (preference: int) (aggregatedVoteList: AggregatedVote list) =
     |> List.groupBy (fun (a, b) -> a) // aggregate by candidateId
     |> List.map (fun (key , values) -> (key, List.sumBy snd values)) // sum votes for candidate - I don't like: List.sumBy snd values
 
-let voteSumToPollResult droopQuota votesSum = 
-    let filteredItems = List.filter (fun (c, v) -> v >= droopQuota) votesSum
-    List.map (fun (c, v) -> {candidateId = c; numberOfVotes = v; elected = true}) filteredItems
+let verifyPollResult droopQuota (pollResultItemList: PollResultItem list) : PollResultItem list = 
+    pollResultItemList |> List.map (fun x -> 
+        if x.numberOfVotes >= droopQuota then  {x with elected = true }
+        else {x with elected = false }) 
+
+let voteSumToPollResult votesSum = 
+    List.map (fun (c, v) -> {candidateId = c; numberOfVotes = v; elected = true}) votesSum
 
 let isPollFinished numberOfSeats pollResultItemList =
     List.filter (fun x -> x.elected) pollResultItemList
@@ -52,7 +56,6 @@ let addNumberOfVotesToResult pollResultItemList candidateId votesToAdd =
         x
     ) pollResultItemList
 
-// TODO: test
 let addOneSurplus aggregatedVoteList pollResultItemList surplus = 
     let (winnerCandidateId, surplusNumberOfVotes) = surplus
     let winnerTotalVotes = getCandidateTotalVotes pollResultItemList winnerCandidateId
@@ -72,15 +75,18 @@ let addOneSurplus aggregatedVoteList pollResultItemList surplus =
 let addSurplus aggregatedVoteList pollResultItemList surplusList =
     List.fold (fun acc surplus -> addOneSurplus aggregatedVoteList acc surplus) pollResultItemList surplusList
 
-let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResultItemList =
-    let surplusList = getSurplus droopQuota pollResultItemList
-    let pollResultWithSurplus = addSurplus aggregatedVoteList pollResultItemList surplusList
-
-    let numberResults = List.length pollResultItemList
-    match numberResults with
-    //| 0 -> calculateFirstPoll 
-    | numberOfSeats -> pollResultItemList
-    | _ -> iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResultItemList
+let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResultItemListInput =
+    let pollResultItemList = verifyPollResult droopQuota pollResultItemListInput
+    if isPollFinished numberOfSeats pollResultItemList then
+        pollResultItemList
+    else
+        let surplusList = getSurplus droopQuota pollResultItemList
+        let pollResultWithSurplus = addSurplus aggregatedVoteList pollResultItemList surplusList
+        if isPollFinished numberOfSeats pollResultItemList then
+            pollResultWithSurplus
+        else
+            // TODO: eliminate last candidate here
+            iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResultItemList
 
 // Only valid and sorted ballots
 let mainCalculation (poll: Poll) (voteList: Ballot list) =
@@ -89,9 +95,5 @@ let mainCalculation (poll: Poll) (voteList: Ballot list) =
     let aggregatedVotes = aggregateVotes voteList
     // first round
     let votesSum = sumVotes 1 aggregatedVotes
-    let pollResult = voteSumToPollResult droopQuota votesSum
-    let pollFinished = isPollFinished poll.numberOfSeats pollResult
-    if pollFinished then
-        pollResult
-    else
-        iterationLoop poll.numberOfSeats droopQuota aggregatedVotes pollResult
+    let pollResultItemList = voteSumToPollResult votesSum
+    iterationLoop poll.numberOfSeats droopQuota aggregatedVotes pollResultItemList
