@@ -32,6 +32,7 @@ let ``sumVotes`` () =
     Assert.Equal(3, c3)
     Assert.Equal(3, v3)
 
+
 [<Fact>]
 let ``isPollFinished true`` () = 
     let pollResult = [
@@ -50,7 +51,7 @@ let ``isPollFinished false`` () =
     Assert.False(res)
 
 [<Fact>]
-let ``getSurplus`` () =
+let ``getSurplus when is a surplus`` () =
     let pollResult = [
         {candidateId = 1; numberOfVotes = 4; elected = true};
         {candidateId = 2; numberOfVotes = 5; elected = true};
@@ -61,6 +62,16 @@ let ``getSurplus`` () =
     let (c, v) = res.[0]
     Assert.Equal(3, c)
     Assert.Equal(1, v)
+
+[<Fact>]
+let ``getSurplus when no surplus`` () =
+    let pollResult = [
+        {candidateId = 1; numberOfVotes = 4; elected = true};
+        {candidateId = 2; numberOfVotes = 5; elected = true};
+        {candidateId = 3; numberOfVotes = 6; elected = true};
+     ]
+    let res = getSurplus 10 pollResult
+    Assert.Equal(0, List.length res)  
 
 [<Fact>]
 let ``aggregate votes`` () =
@@ -176,7 +187,7 @@ let ``addOneSurplus`` () =
     Assert.Equal(expected.[0], res.[0])
     Assert.Equal(expected.[1], res.[1])
     Assert.Equal(expected.[2], res.[2])
-
+(*
 // https://en.wikipedia.org/wiki/Counting_single_transferable_votes
 [<Fact>]
 let ``mainCaluclation`` () =
@@ -195,3 +206,4 @@ let ``mainCaluclation`` () =
     let res = mainCalculation poll voteList
 
     Assert.True(true)
+*)
