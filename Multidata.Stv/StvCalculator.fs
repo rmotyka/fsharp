@@ -75,17 +75,17 @@ let addOneSurplus aggregatedVoteList pollResultItemList surplus =
 let addSurplus aggregatedVoteList pollResultItemList surplusList =
     List.fold (fun acc surplus -> addOneSurplus aggregatedVoteList acc surplus) pollResultItemList surplusList
 
-let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResultItemListInput =
-    let pollResultItemList = verifyPollResult droopQuota pollResultItemListInput
+let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResultItemList =
+    let pollResultItemList = verifyPollResult droopQuota pollResultItemList
     if isPollFinished numberOfSeats pollResultItemList then
         pollResultItemList
     else
         let surplusList = getSurplus droopQuota pollResultItemList
-        let pollResultWithSurplus = addSurplus aggregatedVoteList pollResultItemList surplusList
-        if isPollFinished numberOfSeats pollResultItemList then
-            pollResultWithSurplus
-        else
+        if List.isEmpty surplusList then
             // TODO: eliminate last candidate here
+            iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResultItemList
+        else
+            let pollResultItemList = addSurplus aggregatedVoteList pollResultItemList surplusList
             iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResultItemList
 
 // Only valid and sorted ballots
