@@ -58,8 +58,8 @@ let ``getSurplus when is a surplus`` () =
         {candidateId = 3; numberOfVotes = 6; elected = true};
      ]
     let res = getSurplus 5 pollResult
-    Assert.Equal(1, List.length res)
-    let (c, v) = res.[0]
+    
+    let (c, v) = res.Value
     Assert.Equal(3, c)
     Assert.Equal(1, v)
 
@@ -71,7 +71,7 @@ let ``getSurplus when no surplus`` () =
         {candidateId = 3; numberOfVotes = 6; elected = true};
      ]
     let res = getSurplus 10 pollResult
-    Assert.Equal(0, List.length res)  
+    Assert.Equal(None, res)  
 
 [<Fact>]
 let ``aggregate votes`` () =
@@ -163,7 +163,7 @@ let ``addNumberOfVotesToResult substract`` () =
 
 // https://en.wikipedia.org/wiki/Counting_single_transferable_votes
 [<Fact>]
-let ``addOneSurplus`` () =
+let ``addSurplus`` () =
     let aggregatedVoteList = [
         {AggregatedVote.ballot = [ 1; 2; 3; 4 ]; numberOfVotes = 16};
         {AggregatedVote.ballot = [ 1; 3; 2; 4 ]; numberOfVotes = 24};
@@ -176,7 +176,7 @@ let ``addOneSurplus`` () =
         {candidateId = 4; numberOfVotes = 17; elected = false};
     ]
     let surplus = (1, 20)
-    let res = addOneSurplus aggregatedVoteList pollResultItemList surplus
+    let res = addSurplus aggregatedVoteList pollResultItemList surplus
     let expected = [
         {candidateId = 1; numberOfVotes = 20; elected = true};
         {candidateId = 2; numberOfVotes = 8; elected = false};

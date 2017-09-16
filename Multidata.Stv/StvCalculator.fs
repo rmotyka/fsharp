@@ -28,9 +28,10 @@ let isPollFinished numberOfSeats pollResultItemList =
     |> List.length >= numberOfSeats
 
 let getSurplus droopQuota (pollResultItemList: PollResultItem list) = 
-    pollResultItemList
-    |> List.filter (fun x -> x.numberOfVotes > droopQuota)
-    |> List.map (fun x -> (x.candidateId, x.numberOfVotes - droopQuota))
+    let maybeSurplus = pollResultItemList |> List.tryFind (fun x -> x.numberOfVotes > droopQuota) 
+    match maybeSurplus with
+    | Some x -> Some (x.candidateId, x.numberOfVotes - droopQuota)
+    | None -> None
 
 let getAggregatedVoteWhereCandidateIsOnPosiotion position aggregatedVoteList candidateId = 
     List.filter (fun x -> List.item (position - 1) x.ballot = candidateId) aggregatedVoteList
@@ -56,7 +57,7 @@ let addNumberOfVotesToResult pollResultItemList candidateId votesToAdd =
         x
     ) pollResultItemList
 
-let addOneSurplus aggregatedVoteList pollResultItemList surplus = 
+let addSurplus aggregatedVoteList pollResultItemList surplus = 
     let (winnerCandidateId, surplusNumberOfVotes) = surplus
     let winnerTotalVotes = getCandidateTotalVotes pollResultItemList winnerCandidateId
     let position = 1 // TODO: get from arguments
@@ -71,21 +72,18 @@ let addOneSurplus aggregatedVoteList pollResultItemList surplus =
         | None -> acc
     ) pollResultItemList aggregateVotes
 
-// TODO: test
-let addSurplus aggregatedVoteList pollResultItemList surplusList =
-    List.fold (fun acc surplus -> addOneSurplus aggregatedVoteList acc surplus) pollResultItemList surplusList
-
 let rec iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResultItemList =
     let pollResultItemList = verifyPollResult droopQuota pollResultItemList
     if isPollFinished numberOfSeats pollResultItemList then
         pollResultItemList
     else
-        let surplusList = getSurplus droopQuota pollResultItemList
-        if List.isEmpty surplusList then
-            // TODO: eliminate last candidate here
+        let maybeSurplus = getSurplus droopQuota pollResultItemList
+        match maybeSurplus with
+        | Some surplus ->
+            let pollResultItemList = addSurplus aggregatedVoteList pollResultItemList surplus
             iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResultItemList
-        else
-            let pollResultItemList = addSurplus aggregatedVoteList pollResultItemList surplusList
+        | None ->
+            // TODO: eliminate last candidate here
             iterationLoop numberOfSeats droopQuota aggregatedVoteList pollResultItemList
 
 // Only valid and sorted ballots
