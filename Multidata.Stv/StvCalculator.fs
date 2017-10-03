@@ -67,6 +67,6 @@ let mainCalculation (poll: Poll) (voteList: Ballot list) =
     let droopQuota = calculateDroopQuota poll.numberOfSeats totalValidPoll
 
     let aggregatedVotes = aggregateVotes voteList
-    let winners = iterationLoop poll.numberOfSeats [] droopQuota aggregatedVotes
-    winners
+    let winnersCandidateIdList = iterationLoop poll.numberOfSeats [] droopQuota aggregatedVotes
+    poll.candidates |> List.filter(fun x -> List.contains x.candidateId winnersCandidateIdList)
     
