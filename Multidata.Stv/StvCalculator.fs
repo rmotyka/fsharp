@@ -24,7 +24,11 @@ let getWinner quota firstRow =
 
 let removeCandidateFromBallot votesSurplus winner aggregatedVote = 
     let candidateId = fst winner
-    let newVotes = calculateSurplusVotesToAdd aggregatedVote.numberOfVotes (snd winner) votesSurplus
+    let newVotes = 
+        if aggregatedVote.ballot.[0] = candidateId then
+            calculateSurplusVotesToAdd aggregatedVote.numberOfVotes (snd winner) votesSurplus
+        else
+            aggregatedVote.numberOfVotes
     {
         numberOfVotes = newVotes
         ballot = List.filter (fun x -> x <> candidateId) aggregatedVote.ballot
@@ -37,7 +41,8 @@ let removeCandidate aggregatedVotes quota winner =
 let getLooser firstRow =
     firstRow |> List.minBy(snd)
 
-let rec iterationLoop2 numberOfSeats allWinners droopQuota aggregatedVotes :int list =
+let rec iterationLoop numberOfSeats allWinners droopQuota aggregatedVotes =
+    printfn "aggregatedVotes %A" aggregatedVotes
     let firstRow = getFirstRow aggregatedVotes
     let fistRowSum = aggregateByCandidate firstRow
     let maybeWinner = getWinner droopQuota fistRowSum
@@ -50,11 +55,11 @@ let rec iterationLoop2 numberOfSeats allWinners droopQuota aggregatedVotes :int 
             allWinners
         else
             let aggregatedVotes = removeCandidate aggregatedVotes droopQuota winner
-            iterationLoop2 numberOfSeats allWinners droopQuota aggregatedVotes
+            iterationLoop numberOfSeats allWinners droopQuota aggregatedVotes
     | None ->
         let looser = getLooser fistRowSum
         let aggregatedVotes = removeCandidate aggregatedVotes 0 looser
-        iterationLoop2 numberOfSeats allWinners droopQuota aggregatedVotes
+        iterationLoop numberOfSeats allWinners droopQuota aggregatedVotes
 
 // Only valid and sorted ballots
 let mainCalculation (poll: Poll) (voteList: Ballot list) =
@@ -62,6 +67,6 @@ let mainCalculation (poll: Poll) (voteList: Ballot list) =
     let droopQuota = calculateDroopQuota poll.numberOfSeats totalValidPoll
 
     let aggregatedVotes = aggregateVotes voteList
-    let winners = iterationLoop2 poll.numberOfSeats [] droopQuota aggregatedVotes
+    let winners = iterationLoop poll.numberOfSeats [] droopQuota aggregatedVotes
     winners
     
