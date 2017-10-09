@@ -56,6 +56,6 @@ let mainCalc input numberOfColumns =
     let modificator = setBetterCombinations input
     let result = 
         [0..numberOfColumns-1] 
-        |> allCombinations
+        |> allCombinations 
         |> List.fold modificator initialResult
     { Score = result.Score; FlippedColumns = List.sort result.FlippedColumns }
